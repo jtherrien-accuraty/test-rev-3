@@ -1,0 +1,61 @@
+
+
+
+
+body, #root, .container-main {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .row {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+
+body {
+  background-color: white;
+}
+
+.dept-buttons-container{
+  padding: 1em;
+
+  .row {
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+}
+
+.footer {
+  display: block;
+  bottom: 0;
+  background-color: #283479,
+}
+
+@media (max-width: 575px){
+  .footer {
+    p {
+      text-align: center !important;
+      font-size: 12px;
+    }
+  }
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
+  align-self: center;
+}
+
+$theme-colors: (
+  "primary":  #283479,
+  "secondary": #008ECE,
+  "navy": #192359,
+  "lightGrey": #F2F2F2
+);

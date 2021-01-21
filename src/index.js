@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './assets/fonts/Lato-Regular.ttf';
+import './assets/fonts/Lato-Bold.ttf';
 
 ReactDOM.render(
   <React.StrictMode>
