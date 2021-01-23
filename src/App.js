@@ -22,6 +22,7 @@ class Scheduler extends Component{
       deptSelection: '',
       patientType: '',
       currentStep: 1,
+      availableVisitTypes: [],
       id: `94788,89909,90962,102348,69877,91798,100961,`,
       dept: `3001043,3001108,3001114,3001005,3001181,3001037,`,
       vt: `2759`
@@ -53,30 +54,21 @@ class Scheduler extends Component{
     catch(err){
       console.log('error:' + err);
     }
-    try{
-      fetch("https://www.mychristie.com/Christie/openscheduling/SignupAndSchedule/EmbeddedSchedule?id=94788,89909,90962,102348,69877,91798,100961,&amp;dept=3001043,3001108,3001114,3001005,3001181,3001037,&amp;vt=2759")
-      .then( (resp) => {
-        resp.text();
-      })
-      .then( (res) => {
-        this.setState({html: res});
-        console.log(res);
-      })
-      
-    }
-    catch(err){
-      console.log(err);
-    }
   }
 
   deptButtons(){
     let deptButtons = [];
     let idx = 0;
     let rowIdx = 1;
+    deptButtons.push(
+      <Col sm={true} className='p-3' key={'deptButton-col-ConvenientCare'}>
+          <Button style={{height: '100%'}} block variant='primary' key={'deptButton-ConvenientCare' } onClick={() => {this.setState({currentStep: 3, deptSelection: 'CONVENIENT CARE', id: '300253,300250,300254,300255,',dept: '3001016,3001117,3001045,3001103,', patientType: 'CONVENIENT CARE',vt: '2760'})}}>CONVENIENT CARE</Button>
+        </Col>
+    );
     for(let x of this.state.jsn){
       deptButtons.push(
         <Col sm={true} className='p-3' key={'deptButton-col-' + x.Title}>
-          <Button style={{height: '100%'}} block variant='primary' key={'deptButton-' + x.Title} onClick={() => {this.setState({currentStep: 2, deptSelection: x.Title})}}>{x.Title}</Button>
+          <Button style={{height: '100%'}} block variant='primary' key={'deptButton-' + x.Title} onClick={() => {this.setState({currentStep: 2, deptSelection: x.Title, availableVisitTypes: x.VisitTypes})}}>{x.Title}</Button>
         </Col>
       );
       // idx++;
@@ -113,10 +105,11 @@ class Scheduler extends Component{
 
   render(){
     if(this.state.currentStep === 1){
+      console.log(this.state.availableVisitTypes);
       return(
         <Container fluid style={{ backgroundColor: 'white', height: '100%', width: '100%', display: 'flex', flexFlow: 'column'}} className='py-5 px-0'>
           
-            <Row className='pb-5 px-0'>
+            <Row className='pb-5 px-3'>
               <Col className='mb-0'>
                 <span className='text-secondary h2'><strong>STEP 1: </strong></span><span className='ml-2 text-primary h3'><strong>Choose a department</strong></span>
               </Col>
@@ -130,40 +123,85 @@ class Scheduler extends Component{
       );
     }
     else if(this.state.currentStep === 2){
-      return(
-        <Container fluid style={{backgroundColor: 'white', height: '100%', width: '100%',  display: 'flex', flexFlow: 'column'}} className='py-5 px-0'>
-         
+      // let availableVisitTypes = this.state.availableVisitTypes;
+      console.log(this.state.availableVisitTypes);
+      if(this.state.availableVisitTypes.length === 0){
+        return(
+          <Container fluid style={{backgroundColor: 'white', height: '100%', width: '100%',  display: 'flex', flexFlow: 'column'}} className='py-5 px-0'>
           
-            <Row className='pb-5 px-0'>
-              <Col className='mb-0'>
-                <span className='text-secondary h2'><strong>STEP 2: </strong></span><span className='ml-2 text-primary h3'><strong>Are you a new or existing patient?</strong></span>
-              </Col>
-            </Row>
+            
+              <Row className='pb-5 px-3'>
+                <Col className='mb-0'>
+                  <span className='text-secondary h2'><strong>STEP 2: </strong></span><span className='ml-2 text-primary h3'><strong>Are you a new or existing patient?</strong></span>
+                </Col>
+              </Row>
+            
+              <Row className='p-3' style={{backgroundColor: 'lightgray'}}>
+                <Container key='dept-buttons-container' className='dept-buttons-container p-0' fluid>
+                  <Row className='px-0' key='dept-buttons-row' sm={2}>
+                    <Col className='p-3' sm={true}>
+                      <Button block variant='primary' key='patientButton-new' onClick={() => {this.setState({currentStep: 3, patientType: 'NEW PATIENT'})}}>NEW PATIENT</Button>
+                    </Col>
+                    <Col className='p-3' sm={true}>
+                      <Button block variant='primary' key='patientButton-established' onClick={() => {this.setState({currentStep: 3, patientType: 'ESTABLISHED PATIENT'})}}>ESTABLISHED PATIENT</Button>
+                    </Col>
+                    <Col className='p-3' sm={12}>
+                      <Button block variant='secondary' key='patientButton-startOver' onClick={() => {this.setState({currentStep: 1, patientType: '', deptSelection: ''})}}>START OVER</Button>
+                    </Col>
+                  </Row>
+                </Container>
+              </Row>
+            
+          </Container>
+            
+        );
+      }
+      else{
+        //additional visit types found.
+        let additionalVisitButtons = [];
+        this.state.availableVisitTypes.map( (visit) => {
+          additionalVisitButtons.push(
+            <Col className='p-3' key={'patientButtonCol-' + visit.Title} sm={true}>
+              <Button block variant='primary' key={'patientButton-' + visit.Title} onClick={() => {this.setState({currentStep: 3, patientType: visit.Title, vt: visit.vt})}}>{visit.Title}</Button>
+            </Col>
+          );
+        });
+        return(
+          <Container fluid style={{backgroundColor: 'white', height: '100%', width: '100%',  display: 'flex', flexFlow: 'column'}} className='py-5 px-0'>
           
-            <Row className='p-3' style={{backgroundColor: 'lightgray'}}>
-              <Container key='dept-buttons-container' className='dept-buttons-container p-0' fluid>
-                <Row className='px-0' key='dept-buttons-row' sm={2}>
-                  <Col className='p-3' sm={true}>
-                    <Button block variant='primary' key='patientButton-new' onClick={() => {this.setState({currentStep: 3, patientType: 'NEW PATIENT'})}}>NEW PATIENT</Button>
-                  </Col>
-                  <Col className='p-3' sm={true}>
-                    <Button block variant='primary' key='patientButton-established' onClick={() => {this.setState({currentStep: 3, patientType: 'ESTABLISHED PATIENT'})}}>ESTABLISHED PATIENT</Button>
-                  </Col>
-                  <Col className='p-3' sm={12}>
-                    <Button block variant='secondary' key='patientButton-startOver' onClick={() => {this.setState({currentStep: 1, patientType: '', deptSelection: ''})}}>START OVER</Button>
-                  </Col>
-                </Row>
-              </Container>
-            </Row>
-          
-        </Container>
-          
-      );
+            
+              <Row className='pb-5 px-3'>
+                <Col className='mb-0'>
+                  <span className='text-secondary h2'><strong>STEP 2: </strong></span><span className='ml-2 text-primary h3'><strong>Are you a new or existing patient?</strong></span>
+                </Col>
+              </Row>
+            
+              <Row className='p-3' style={{backgroundColor: 'lightgray'}}>
+                <Container key='dept-buttons-container' className='dept-buttons-container p-0' fluid>
+                  <Row className='px-0' key='dept-buttons-row' sm={2}>
+                    <Col className='p-3' sm={true}>
+                      <Button block variant='primary' key='1patientButton-new' onClick={() => {this.setState({currentStep: 3, patientType: 'NEW PATIENT'})}}>NEW PATIENT</Button>
+                    </Col>
+                    <Col className='p-3' sm={true}>
+                      <Button block variant='primary' key='1patientButton-established' onClick={() => {this.setState({currentStep: 3, patientType: 'ESTABLISHED PATIENT'})}}>ESTABLISHED PATIENT</Button>
+                    </Col>
+                    {additionalVisitButtons}
+                    <Col className='p-3' sm={12}>
+                      <Button block variant='secondary' key='1patientButton-startOver' onClick={() => {this.setState({currentStep: 1, patientType: '', deptSelection: ''})}}>START OVER</Button>
+                    </Col>
+                  </Row>
+                </Container>
+              </Row>
+            
+          </Container>
+            
+        );
+      }
     }
     else if(this.state.currentStep === 3){
       return(
         <Container fluid style={{backgroundColor: 'white', height: '100%', width: '100%', display: 'flex', flexFlow: 'column'}} className='py-5 px-0'>
-            <Row className='pb-5 px-0'>
+            <Row className='pb-5 px-3'>
               <Col className='mb-0'>
                 <span className='text-secondary h2'><strong>STEP 3: </strong></span><span className='ml-2 text-primary h3'><strong>Pick a Provider, Date, and Time</strong></span>
               </Col>
@@ -208,15 +246,15 @@ class App extends Component{
       <Container className='container-main px-0' style={{height: '100%', display: 'flex', flexFlow: 'column'}} fluid>
         <Container className='px-0' fluid>
           <Row className='py-0 m-0' id='test' style={{ justifyContent: 'left', paddingLeft: '4.16%', paddingRight: '4.16%',  backgroundImage: 'url(' + HeaderBackgroundImage + ')', backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}} >
-            <Col className='p-0'  style={{alignSelf: 'center'}}>
-              <Image src={Logo} alt='Christie Clinic Logo' style={{maxHeight: '100px'}} fluid />
+            <Col className='py-0 pl-3 pr-0'  style={{alignSelf: 'center'}}>
+              <Image src={Logo} alt='Christie Clinic Logo' className='pl-2' style={{maxHeight: '100px'}} fluid />
             </Col>
             <Col className='px-0 py-3'>
-              <Container className='py-3 px-0' style={{justifyContent: 'right', width: '100%'}} fluid>
-                <Row className='p-0' style={{justifyContent: 'center'}}>
+              <Container className='py-3 pl-0 pr-3' style={{justifyContent: 'right', width: '100%'}} fluid>
+                <Row className='py-0 pr-3 pl-0' style={{justifyContent: 'center'}}>
                   <h1 style={{color: 'white', width: '100%', textAlign: 'right'}}>ONLINE SCHEDULING</h1>
                 </Row>
-                <Row className='p-0' style={{justifyContent: 'center'}}>
+                <Row className='py-0 pr-3 pl-0' style={{justifyContent: 'center'}}>
                   <h2 style={{color: 'white', width: '100%', textAlign: 'right'}}>Follow the steps below.</h2>
                 </Row>
               </Container>
