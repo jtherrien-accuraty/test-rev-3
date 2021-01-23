@@ -72,12 +72,12 @@ class Scheduler extends Component{
         </Col>
       );
       // idx++;
-      if(idx === 2){
-        idx = 0;
-        deptButtons.push(
-          <Col sm={12} key={'deptButton-placeholder-col-' + rowIdx++}/>
-        );
-      }
+      // if(idx === 2){
+      //   idx = 0;
+      //   deptButtons.push(
+      //     <Col sm={12} key={'deptButton-placeholder-col-' + rowIdx++}/>
+      //   );
+      // }
     }
     return(
       <Container key='dept-buttons-container' className='dept-buttons-container p-0' fluid>
@@ -162,7 +162,7 @@ class Scheduler extends Component{
         this.state.availableVisitTypes.map( (visit) => {
           additionalVisitButtons.push(
             <Col className='p-3' key={'patientButtonCol-' + visit.Title} sm={true}>
-              <Button block variant='primary' key={'patientButton-' + visit.Title} onClick={() => {this.setState({currentStep: 3, patientType: visit.Title, vt: visit.vt})}}>{visit.Title}</Button>
+              <Button block variant='primary' key={'patientButton-' + visit.Title} onClick={() => {this.setState({currentStep: 3, patientType: visit.Title, vt: visit.vt, id: visit.Id})}}>{visit.Title}</Button>
             </Col>
           );
         });
@@ -179,12 +179,12 @@ class Scheduler extends Component{
               <Row className='p-3' style={{backgroundColor: 'lightgray'}}>
                 <Container key='dept-buttons-container' className='dept-buttons-container p-0' fluid>
                   <Row className='px-0' key='dept-buttons-row' sm={2}>
-                    <Col className='p-3' sm={true}>
+                    {/* <Col className='p-3' sm={true}>
                       <Button block variant='primary' key='1patientButton-new' onClick={() => {this.setState({currentStep: 3, patientType: 'NEW PATIENT'})}}>NEW PATIENT</Button>
                     </Col>
                     <Col className='p-3' sm={true}>
                       <Button block variant='primary' key='1patientButton-established' onClick={() => {this.setState({currentStep: 3, patientType: 'ESTABLISHED PATIENT'})}}>ESTABLISHED PATIENT</Button>
-                    </Col>
+                    </Col> */}
                     {additionalVisitButtons}
                     <Col className='p-3' sm={12}>
                       <Button block variant='secondary' key='1patientButton-startOver' onClick={() => {this.setState({currentStep: 1, patientType: '', deptSelection: ''})}}>START OVER</Button>
